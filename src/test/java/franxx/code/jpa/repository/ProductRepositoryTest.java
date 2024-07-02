@@ -203,4 +203,14 @@ class ProductRepositoryTest {
     assertEquals(1, products.size());
     assertEquals("Toyota", products.getFirst().getName());
   }
+
+  @Test
+  void searchProduct() {
+    Pageable pageable = PageRequest.of(0, 1, Sort.by(Sort.Order.desc("id")));
+    Page<Product> products = productRepository.searchProduct("%Apple%", pageable);
+    assertEquals(1, products.getContent().size());
+
+    products = productRepository.searchProduct("%car%", pageable);
+    assertEquals(1, products.getContent().size());
+  }
 }
