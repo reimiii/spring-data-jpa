@@ -147,4 +147,12 @@ class ProductRepositoryTest {
     count = productRepository.countByCategory_Name("phone");
     assertEquals(2, count);
   }
+
+  @Test
+  void testExist() {
+    Boolean toyota = productRepository.existsByName("Toyota");
+    assertTrue(toyota);
+    Boolean mazda = productRepository.existsByName("Mazda");
+    assertTrue(mazda);
+  }
 }
