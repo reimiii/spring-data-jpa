@@ -5,6 +5,8 @@ import franxx.code.jpa.entity.Product;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
 import java.util.List;
@@ -13,10 +15,10 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 class ProductRepositoryTest {
-  
+
   @Autowired
   private CategoryRepository categoryRepository;
-  
+
   @Autowired
   private ProductRepository productRepository;
 
@@ -88,6 +90,7 @@ class ProductRepositoryTest {
     assertEquals("Toyota", car.get(0).getName());
     assertEquals("Mazda", car.get(1).getName());
   }
+
   @Test
   void sort() {
     Sort sort = Sort.by(Sort.Order.desc("id"));
@@ -101,5 +104,30 @@ class ProductRepositoryTest {
     assertEquals(2, car.size());
     assertEquals("Toyota", car.get(0).getName());
     assertEquals("Mazda", car.get(1).getName());
+  }
+
+  @Test
+  void pageable() {
+    // page 1
+    Pageable pageable = PageRequest.of(
+          0,
+          1,
+          Sort.by(Sort.Order.desc("price"))
+    );
+
+    List<Product> car = productRepository.findAllByCategory_Name("car", pageable);
+    assertEquals(1, car.size());
+    assertEquals("Mazda", car.getFirst().getName());
+
+    // page 2
+    pageable = PageRequest.of(
+          1,
+          1,
+          Sort.by(Sort.Order.desc("price"))
+    );
+
+    car = productRepository.findAllByCategory_Name("car", pageable);
+    assertEquals(1, car.size());
+    assertEquals("Toyota", car.getFirst().getName());
   }
 }
