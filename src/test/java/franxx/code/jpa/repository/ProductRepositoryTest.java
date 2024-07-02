@@ -161,8 +161,8 @@ class ProductRepositoryTest {
   }
 
   @Test
-  void deleteTest() {
-    transactionOperations.executeWithoutResult(transactionStatus -> {
+  void deleteTestOld() {
+    transactionOperations.executeWithoutResult(transactionStatus -> { // transaction 1
       Category byId = categoryRepository.findById(23L).orElse(null);
       assertNotNull(byId);
 
@@ -170,12 +170,29 @@ class ProductRepositoryTest {
       product.setName("Subaru");
       product.setPrice(221_000_000L);
       product.setCategory(byId);
-      productRepository.save(product);
+      productRepository.save(product); // transaction 1
 
-      Integer subaru = productRepository.deleteByName("Subaru");
+      Integer subaru = productRepository.deleteByName("Subaru");// transaction 1
       assertEquals(1, subaru);
-      subaru = productRepository.deleteByName("Subaru");
+      subaru = productRepository.deleteByName("Subaru");// transaction 1
       assertEquals(0, subaru);
     });
+  }
+
+  @Test
+  void deleteTestNew() {
+    Category byId = categoryRepository.findById(23L).orElse(null);
+    assertNotNull(byId);
+
+    Product product = new Product();
+    product.setName("Subaru");
+    product.setPrice(221_000_000L);
+    product.setCategory(byId);
+    productRepository.save(product); // transaction 1
+
+    Integer subaru = productRepository.deleteByName("Subaru");// transaction 2
+    assertEquals(1, subaru);
+    subaru = productRepository.deleteByName("Subaru");// transaction 3
+    assertEquals(0, subaru);
   }
 }
