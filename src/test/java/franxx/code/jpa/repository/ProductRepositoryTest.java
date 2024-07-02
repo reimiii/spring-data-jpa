@@ -213,4 +213,19 @@ class ProductRepositoryTest {
     products = productRepository.searchProduct("%car%", pageable);
     assertEquals(1, products.getContent().size());
   }
+
+  @Test
+  void modifying() {
+    transactionOperations.executeWithoutResult(transactionStatus -> {
+      Integer total = productRepository.deleteProductUsingName("Wrong");
+      assertEquals(0, total);
+
+      total = productRepository.updateProductToZero(1L);
+      assertEquals(1, total);
+
+      Product product = productRepository.findById(1L).orElse(null);
+      assertNotNull(product);
+      assertEquals(0L, product.getPrice());
+    });
+  }
 }
