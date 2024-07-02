@@ -195,4 +195,12 @@ class ProductRepositoryTest {
     subaru = productRepository.deleteByName("Subaru");// transaction 3
     assertEquals(0, subaru);
   }
+
+  @Test
+  void namedQuery() {
+    Pageable pageable = PageRequest.of(0, 1);
+    List<Product> products = productRepository.searchProductUsingName("Toyota", pageable);
+    assertEquals(1, products.size());
+    assertEquals("Toyota", products.getFirst().getName());
+  }
 }
