@@ -5,6 +5,7 @@ import franxx.code.jpa.entity.Product;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Sort;
 
 import java.util.List;
 
@@ -82,6 +83,20 @@ class ProductRepositoryTest {
     assertEquals(2, phone.size());
     assertEquals("Apple Iphone 11", phone.get(0).getName());
     assertEquals("Apple Iphone 12", phone.get(1).getName());
+
+    assertEquals(2, car.size());
+    assertEquals("Toyota", car.get(0).getName());
+    assertEquals("Mazda", car.get(1).getName());
+  }
+  @Test
+  void sort() {
+    Sort sort = Sort.by(Sort.Order.desc("id"));
+    List<Product> phone = productRepository.findAllByCategory_Name("phone", sort);
+    List<Product> car = productRepository.findAllByCategory_Name("car");
+
+    assertEquals(2, phone.size());
+    assertEquals("Apple Iphone 11", phone.get(1).getName());
+    assertEquals("Apple Iphone 12", phone.get(0).getName());
 
     assertEquals(2, car.size());
     assertEquals("Toyota", car.get(0).getName());
