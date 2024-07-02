@@ -138,4 +138,13 @@ class ProductRepositoryTest {
     assertEquals("Toyota", car.getContent().getFirst().getName());
 
   }
+
+  @Test
+  void count() {
+    Long count = productRepository.count();
+    assertEquals(4, count);
+
+    count = productRepository.countByCategory_Name("phone");
+    assertEquals(2, count);
+  }
 }
