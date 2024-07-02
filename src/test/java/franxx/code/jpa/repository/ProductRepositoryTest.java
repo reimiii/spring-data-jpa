@@ -9,8 +9,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.transaction.support.TransactionOperations;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -23,6 +25,8 @@ class ProductRepositoryTest {
   @Autowired
   private ProductRepository productRepository;
 
+  @Autowired
+  private TransactionOperations transactionOperations;
 
   @Test
   void insertSomeCategory() {
@@ -154,5 +158,24 @@ class ProductRepositoryTest {
     assertTrue(toyota);
     Boolean mazda = productRepository.existsByName("Mazda");
     assertTrue(mazda);
+  }
+
+  @Test
+  void deleteTest() {
+    transactionOperations.executeWithoutResult(transactionStatus -> {
+      Category byId = categoryRepository.findById(23L).orElse(null);
+      assertNotNull(byId);
+
+      Product product = new Product();
+      product.setName("Subaru");
+      product.setPrice(221_000_000L);
+      product.setCategory(byId);
+      productRepository.save(product);
+
+      Integer subaru = productRepository.deleteByName("Subaru");
+      assertEquals(1, subaru);
+      subaru = productRepository.deleteByName("Subaru");
+      assertEquals(0, subaru);
+    });
   }
 }
