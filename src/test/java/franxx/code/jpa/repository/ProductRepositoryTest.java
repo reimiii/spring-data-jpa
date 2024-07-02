@@ -5,6 +5,7 @@ import franxx.code.jpa.entity.Product;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -115,9 +116,12 @@ class ProductRepositoryTest {
           Sort.by(Sort.Order.desc("price"))
     );
 
-    List<Product> car = productRepository.findAllByCategory_Name("car", pageable);
-    assertEquals(1, car.size());
-    assertEquals("Mazda", car.getFirst().getName());
+    Page<Product> car = productRepository.findAllByCategory_Name("car", pageable);
+    assertEquals(1, car.getContent().size());
+    assertEquals(0, car.getNumber());
+    assertEquals(2, car.getTotalElements());
+    assertEquals(2, car.getTotalPages());
+    assertEquals("Mazda", car.getContent().getFirst().getName());
 
     // page 2
     pageable = PageRequest.of(
@@ -127,7 +131,11 @@ class ProductRepositoryTest {
     );
 
     car = productRepository.findAllByCategory_Name("car", pageable);
-    assertEquals(1, car.size());
-    assertEquals("Toyota", car.getFirst().getName());
+    assertEquals(1, car.getContent().size());
+    assertEquals(1, car.getNumber());
+    assertEquals(2, car.getTotalElements());
+    assertEquals(2, car.getTotalPages());
+    assertEquals("Toyota", car.getContent().getFirst().getName());
+
   }
 }
