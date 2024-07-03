@@ -234,7 +234,7 @@ class ProductRepositoryTest {
             categoryRepository.findById(23L).orElse(null)
       );
       productStream.forEach(p -> {
-        System.out.println(p.getId() + ": " + p.getName()+" - " + p.getCategory().getName());
+        System.out.println(p.getId() + ": " + p.getName() + " - " + p.getCategory().getName());
       });
     });
   }
@@ -249,6 +249,35 @@ class ProductRepositoryTest {
     while (allByCategory.hasNext()) {
       allByCategory = productRepository.findAllByCategory(category, allByCategory.nextPageable());
     }
+
+  }
+
+  @Test
+  void lock1() {
+    transactionOperations.executeWithoutResult(transactionStatus -> {
+      try {
+        Product product = productRepository.findFirstByIdEquals(1L).orElse(null);
+        assertNotNull(product);
+
+        product.setPrice(22_000_000L);
+        Thread.sleep(20_000L);
+        productRepository.save(product);
+      } catch (InterruptedException e) {
+        throw new RuntimeException(e);
+      }
+    });
+  }
+
+  @Test
+  void lock2() {
+    transactionOperations.executeWithoutResult(transactionStatus -> {
+
+      Product product = productRepository.findFirstByIdEquals(1L).orElse(null);
+      assertNotNull(product);
+
+      product.setPrice(100_000_000L);
+      productRepository.save(product);
+    });
 
   }
 }
