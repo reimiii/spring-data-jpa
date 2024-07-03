@@ -50,4 +50,15 @@ class CategoryRepositoryTest {
 
 //    categoryRepository.delete(category);
   }
+
+  @Test
+  void audit() {
+    Category category = new Category();
+    category.setName("tank");
+    categoryRepository.save(category);
+
+    assertNotNull(category.getId());
+    assertNotNull(category.getCreatedDate());
+    assertNotNull(category.getLastModifiedDate());
+  }
 }

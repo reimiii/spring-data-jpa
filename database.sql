@@ -24,3 +24,10 @@ create table products
 
 select *
 from products;
+
+alter table categories
+    add column created_date       timestamp,
+    add column last_modified_date timestamp;
+
+select *
+from categories;
