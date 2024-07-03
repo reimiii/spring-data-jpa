@@ -4,6 +4,8 @@ import franxx.code.jpa.entity.Category;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.ExampleMatcher;
 
 import java.util.List;
 import java.util.Optional;
@@ -60,5 +62,27 @@ class CategoryRepositoryTest {
     assertNotNull(category.getId());
     assertNotNull(category.getCreatedDate());
     assertNotNull(category.getLastModifiedDate());
+  }
+
+  @Test
+  void example() {
+    Category category = new Category();
+    category.setName("tank");
+
+    Example<Category> example = Example.of(category);
+    List<Category> categoryList = categoryRepository.findAll(example);
+    assertEquals(1, categoryList.size());
+  }
+
+  @Test
+  void exampleMatcher() {
+    Category category = new Category();
+    category.setName("TANK");
+
+    ExampleMatcher exampleMatcher = ExampleMatcher.matching().withIgnoreNullValues().withIgnoreCase();
+
+    Example<Category> example = Example.of(category, exampleMatcher);
+    List<Category> categoryList = categoryRepository.findAll(example);
+    assertEquals(1, categoryList.size());
   }
 }
