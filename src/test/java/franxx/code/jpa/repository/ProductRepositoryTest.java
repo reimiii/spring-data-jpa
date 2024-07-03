@@ -13,6 +13,7 @@ import org.springframework.transaction.support.TransactionOperations;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -226,6 +227,18 @@ class ProductRepositoryTest {
       Product product = productRepository.findById(1L).orElse(null);
       assertNotNull(product);
       assertEquals(0L, product.getPrice());
+    });
+  }
+
+  @Test
+  void stream() {
+    transactionOperations.executeWithoutResult(transactionStatus -> {
+      Stream<Product> productStream = productRepository.streamAllByCategory(
+            categoryRepository.findById(23L).orElse(null)
+      );
+      productStream.forEach(p -> {
+        System.out.println(p.getId() + ": " + p.getName()+" - " + p.getCategory().getName());
+      });
     });
   }
 }

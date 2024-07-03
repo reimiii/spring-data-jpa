@@ -1,5 +1,6 @@
 package franxx.code.jpa.repository;
 
+import franxx.code.jpa.entity.Category;
 import franxx.code.jpa.entity.Product;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.stream.Stream;
 
 @Repository
 public interface ProductRepository extends JpaRepository<Product, Long> {
@@ -44,4 +46,6 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
   @Modifying
   @Query("update Product p set p.price = 0 where p.id = :id")
   Integer updateProductToZero(@Param("id") Long id);
+
+  Stream<Product> streamAllByCategory(Category category);
 }
