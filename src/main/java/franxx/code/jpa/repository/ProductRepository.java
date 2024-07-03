@@ -2,6 +2,7 @@ package franxx.code.jpa.repository;
 
 import franxx.code.jpa.entity.Category;
 import franxx.code.jpa.entity.Product;
+import franxx.code.jpa.model.SimpleProduct;
 import jakarta.persistence.LockModeType;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -54,4 +55,6 @@ public interface ProductRepository extends JpaRepository<Product, Long>, JpaSpec
 
   @Lock(LockModeType.PESSIMISTIC_WRITE)
   Optional<Product> findFirstByIdEquals(Long id);
+
+  <T> List<T> findAllByNameLike(String name, Class<T> tClass);
 }

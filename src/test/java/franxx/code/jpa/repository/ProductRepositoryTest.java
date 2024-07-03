@@ -2,6 +2,8 @@ package franxx.code.jpa.repository;
 
 import franxx.code.jpa.entity.Category;
 import franxx.code.jpa.entity.Product;
+import franxx.code.jpa.model.ProductPrice;
+import franxx.code.jpa.model.SimpleProduct;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -294,5 +296,14 @@ class ProductRepositoryTest {
 
     List<Product> all = productRepository.findAll(specification);
     assertEquals(2, all.size());
+  }
+
+  @Test
+  void projection() {
+    List<SimpleProduct> allByNameLike = productRepository.findAllByNameLike("%Apple%", SimpleProduct.class);
+    assertEquals(2, allByNameLike.size());
+
+    List<ProductPrice> allByNameLikePrice = productRepository.findAllByNameLike("%Apple%", ProductPrice.class);
+    assertEquals(2, allByNameLikePrice.size());
   }
 }
