@@ -6,10 +6,10 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.*;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.transaction.support.TransactionOperations;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -279,5 +279,20 @@ class ProductRepositoryTest {
       productRepository.save(product);
     });
 
+  }
+
+  @Test
+  void specification() {
+    Specification<Product> specification = (root, criteriaQuery, criteriaBuilder) -> {
+      return criteriaQuery.where(
+            criteriaBuilder.or(
+                  criteriaBuilder.equal(root.get("name"), "Toyota"),
+                  criteriaBuilder.equal(root.get("name"), "Mazda")
+            )
+      ).getRestriction();
+    };
+
+    List<Product> all = productRepository.findAll(specification);
+    assertEquals(2, all.size());
   }
 }
